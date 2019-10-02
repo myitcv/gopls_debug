@@ -2,7 +2,7 @@
 
 Docker setup for debugging [`gopls`](https://github.com/golang/tools/blob/master/gopls/README.md) using Jaeger et al.
 
-### Running
+### Running interactively
 
 ```
 docker run --rm -i -t -v /var/run/docker.sock:/var/run/docker.sock myitcv/gopls_debug
@@ -22,6 +22,18 @@ Then visit:
 * [http://localhost:3000/](http://localhost:3000/) for the Grafana metrics viewer
 
 `Ctrl-c` will gracefully stop everything when you're done.
+
+### Running as a daemon
+
+As a one off:
+
+```
+docker run -d --name gopls_debug -v /var/run/docker.sock:/var/run/docker.sock myitcv/gopls_debug
+```
+
+Then you can use `docker start gopls_debug` and `docker stop gopls_debug`.
+
+Follow the same instructions as above for setting `gopls` flags etc.
 
 ### Building
 
