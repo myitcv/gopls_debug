@@ -1,0 +1,12 @@
+receivers:
+  opencensus:
+    address: ":55678"
+    reconnection-delay: 2s
+
+exporters:
+  prometheus:
+    namespace: "gopls"
+    address: ":8888"
+  jaeger:
+    service_name: "gopls"
+    collector_endpoint: http://jaeger-all-in-one:14268/api/traces

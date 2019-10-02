@@ -1,0 +1,54 @@
+version: "2"
+services:
+
+  # Jaeger
+  jaeger-all-in-one:
+    image: jaegertracing/all-in-one:1.8
+    ports:
+      - "16686:16686"
+      - "14268"
+
+  # Zipkin
+  zipkin-all-in-one:
+    image: openzipkin/zipkin:2.11.12
+    ports:
+      - "9411:9411"
+
+  # Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    command: ["--config.file=/gopls_config/promconfig.yaml"]
+    volumes:
+      - config:/gopls_config
+    ports:
+      - "9090:9090"
+    depends_on:
+      - oc-agent
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:latest
+    command: []
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  # Agent
+  oc-agent:
+    image: ocagent:latest
+    command: ["--config=/gopls_config/oc-agent-config.yaml", "--http-pprof-port=1888"]
+    volumes:
+      - config:/gopls_config
+    ports:
+      - "1888:1888"
+      - "8888:8888"
+      - "55678:55678"
+      - "55679:55679"
+
+    depends_on:
+      - jaeger-all-in-one
+      - zipkin-all-in-one
+
+volumes:
+  config:
